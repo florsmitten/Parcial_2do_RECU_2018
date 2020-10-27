@@ -10,6 +10,44 @@ import java.util.ArrayList;
 
 public class MascotasDB {
     public static void insertMascota(Razas raza, String nombreMascota, String nombreHumano, String tipo, int edad, String[] extras) {
+
+        try {
+            Boolean tipoAnimal = false;
+            if(tipo.equals("perro")){
+
+                tipoAnimal=true;
+            }
+            Boolean vacuna = false;
+            Boolean balanceado = false;
+            Boolean alergia = false;
+            for(String ex : extras){
+
+                if(ex.equals("vacuna")){
+                    vacuna=true;
+                }else if(ex.equals("balanceado")){
+                    balanceado=true;
+                }else if(ex.equals("alergia")){
+                    alergia=true;
+                }
+            }
+            Connection conn = Conexion.getConnection();
+
+            PreparedStatement pStat = conn.prepareStatement("INSERT INTO Mascotas VALUES nombreMascota = ?, nombreHumano = ?, tipo = ?, edad = ?, codigoRaza = ?, vacunasAlDia = ?, soloBalanceada = ?, alergia = ?");
+
+            pStat.setString(1, nombreMascota);
+            pStat.setString(2, nombreHumano);
+            pStat.setBoolean(3, tipoAnimal);
+            pStat.setInt(4, edad);
+            pStat.setInt(5, raza.getIdRaza());
+            pStat.setBoolean(6, vacuna);
+            pStat.setBoolean(7, balanceado);
+            pStat.setBoolean(8, alergia);
+            pStat.executeUpdate();
+            conn.close();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static ArrayList<Mascotas> spver_mascotas(String letras) {
